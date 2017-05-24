@@ -1,0 +1,25 @@
+﻿{
+  "Tasks": [
+    {
+      "TaskMethod": "Frends.File.File.Delete"
+    },
+    {
+      "TaskMethod": "Frends.File.File.Move"
+    },
+    {
+      "TaskMethod": "Frends.File.File.Rename"
+    },
+    {
+      "TaskMethod": "Frends.File.File.Find"
+    },
+    {
+      "TaskMethod": "Frends.File.File.Read"
+    },
+    {
+      "TaskMethod": "Frends.File.File.Write"
+    },
+    {
+      "TaskMethod": "Frends.File.File.Copy"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>Frends.File</id>
+    <version>1.0.0.0</version>
+    <title>FRENDS File tasks</title>
+    <authors>HiQ Finland</authors>
+    <owners />
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>FRENDS File tasks</description>
+    <summary />
+    <dependencies>
+	    <dependency id="Frends.Tasks.Attributes" version="1.2.0" />
+      <dependency id="ByteSize" version="1.3.0" />
+      <dependency id="Microsoft.Extensions.FileSystemGlobbing" version="[1.0.1]" />
+      <dependency id="SimpleImpersonation" version="2.0.1" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" />
+      <frameworkAssembly assemblyName="System.Data" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+	<file src="Frends.File\bin\Release\Frends.File.dll" target="lib\net452\Frends.File.dll" />	
+    <file src="Frends.File\bin\Release\Frends.File.XML" target="Frends.File.XML"/>
+    <file src="Frends.File\FrendsTaskMetadata.json" target="FrendsTaskMetadata.json"/>
+  </files>
+</package>
