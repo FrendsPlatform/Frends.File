@@ -16,7 +16,7 @@
      - [File.Find](#file.find)
        - [Input](#input)
        - [Options](#options)
-           - [sult ###](#sult-###)
+       - [Result](#result)
      - [File.Move](#file.move)
        - [Input](#input)
        - [Options](#options)
@@ -180,7 +180,7 @@ File.Find task is used for finding detailed information about multiple- or a sin
 | UserName                                    | string         | Needs to be of format domain\username | `example\Admin` |
 | Password                                    | string         | | |
 
-### Result ###
+#### Result
 List<object>
 
 | Property          | Type     | Description                       |
