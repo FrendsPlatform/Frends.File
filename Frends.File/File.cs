@@ -17,7 +17,7 @@ namespace Frends.File
     public class File
     {
         /// <summary>
-        /// Read contents as string for a single file. See: https://bitbucket.org/hiqfinland/frends.file#markdown-header-fileread
+        /// Read contents as string for a single file. See: https://github.com/FrendsPlatform/Frends.File
         /// </summary>
         /// <returns>Object {string Path, double SizeInMegaBytes, DateTime CreationTime, DateTime LastWriteTime }  </returns>
         public static async Task<ReadResult> Read([CustomDisplay(DisplayOption.Tab)] ReadInput input, [CustomDisplay(DisplayOption.Tab)] ReadOption options)
@@ -31,7 +31,7 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Write string contents to a file. See: https://bitbucket.org/hiqfinland/frends.file#markdown-header-filewrite
+        /// Write string contents to a file. See: https://github.com/FrendsPlatform/Frends.File
         /// </summary>
         /// <returns>Object {string Path, double SizeInMegaBytes}</returns>
         public static async Task<WriteResult> Write([CustomDisplay(DisplayOption.Tab)] WriteInput input, [CustomDisplay(DisplayOption.Tab)] WriteOption options)
@@ -45,7 +45,7 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Get file information for files. See: https://bitbucket.org/hiqfinland/frends.file#markdown-header-filefind
+        /// Get file information for files. See: https://github.com/FrendsPlatform/Frends.File
         /// </summary>
         ///  <returns>List [ Object  { string Extension, string DirectoryName, string FullPath, 
         /// string FileName, bool IsReadOnly, double SizeInMegaBytes, DateTime CreationTime,
@@ -56,7 +56,7 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Move files. See: https://bitbucket.org/hiqfinland/frends.file#markdown-header-filemove
+        /// Move files. See: https://github.com/FrendsPlatform/Frends.File
         /// </summary>
         ///  <returns>List [ Object { string SourcePath, string Path } ]</returns>
         public static async Task<IList<FileInBatchResult>>Move(
@@ -69,7 +69,7 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Copy files. See: https://bitbucket.org/hiqfinland/frends.file#markdown-header-filecopy
+        /// Copy files. See: https://github.com/FrendsPlatform/Frends.File
         /// </summary>
         ///  <returns>List [ Object { string SourcePath, string Path } ]</returns>
         public static async Task<IList<FileInBatchResult>> Copy(
@@ -82,7 +82,7 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Delete files. See: https://bitbucket.org/hiqfinland/frends.file#markdown-header-filedelete
+        /// Delete files. See: https://github.com/FrendsPlatform/Frends.File
         /// </summary>
         ///  <returns>List [ Object { string Path, string SizeInMegaBytes } ]</returns>
         public static List<DeleteResult> Delete(
@@ -94,7 +94,7 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Rename a single file. See: https://bitbucket.org/hiqfinland/frends.file#markdown-header-filerename
+        /// Rename a single file. See: https://github.com/FrendsPlatform/Frends.File
         /// </summary>
         ///  <returns>Object { string Path }</returns>
         public static RenameResult Rename([CustomDisplay(DisplayOption.Tab)] RenameInput input, [CustomDisplay(DisplayOption.Tab)] RenameOption options)
