@@ -200,7 +200,7 @@ List<object>
 
 ### File.Move
 
-The File.Move task is used for moving one or more files from a directory to another. The task uses [pattern matching](#pattern-matching) ) for finding files to move.
+The File.Move task is used for moving one or more files from a directory to another. The task uses [pattern matching](#pattern-matching) for finding files to move.
 
 #### Input
 
