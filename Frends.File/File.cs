@@ -132,6 +132,13 @@ namespace Frends.File
 
         internal static PatternMatchingResult FindMatchingFiles(string directoryPath, string pattern)
         {
+            // Check the user can access the folder
+            // This will return false if the path does not exist or you do not have read permissions.
+            if (!Directory.Exists(directoryPath))
+            {
+                throw new Exception($"Directory does not exist or you do not have read access. Tried to access directory '{directoryPath}'");
+            }
+
             var matcher = new Matcher();
             matcher.AddInclude(pattern);
             var results = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(directoryPath)));

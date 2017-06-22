@@ -240,6 +240,20 @@ namespace Frends.File.Tests
         }
 
         [Test]
+        public void FindFilesShouldThrowIfFolderNotExist()
+        {
+            var ex = Assert.Throws<Exception>(() => File.Find(
+                new FindInput()
+                {
+                    Directory = "DoesNotExist",
+                    Pattern = "**.*"
+                },
+                new FindOption()));
+
+            Assert.That(ex.Message, Does.Contain("Directory does not exist or you do not have read access"));
+        }
+
+        [Test]
         public async Task WriteFileAppend()
         {
             TestFileContext.CreateFile("test.txt", "old content");
