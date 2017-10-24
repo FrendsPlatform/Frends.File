@@ -16,7 +16,13 @@
       "TaskMethod": "Frends.File.File.Read"
     },
     {
+      "TaskMethod": "Frends.File.File.ReadBytes"
+    },
+    {
       "TaskMethod": "Frends.File.File.Write"
+    },
+    {
+      "TaskMethod": "Frends.File.File.WriteBytes"
     },
     {
       "TaskMethod": "Frends.File.File.Copy"
