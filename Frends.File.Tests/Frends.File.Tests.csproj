@@ -70,10 +70,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ansi.txt">
+    <Content Include="TestFiles\ansi.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="utf8nobom.txt">
+    <Content Include="TestFiles\frends_favicon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles\utf8nobom.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

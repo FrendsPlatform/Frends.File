@@ -312,18 +312,97 @@ namespace Frends.File.Tests
         }
 
         [Test]
-        public async Task ReadFileContent()
+        public async Task WriteFileBytesAppend()
         {
-            TestFileContext.CreateFile("Folder/test.txt", "Well this is content hi");
-            var result = await File.Read(new ReadInput() { Path = Path.Combine(TestFileContext.RootPath, "folder/test.txt") }, new ReadOption() { });
-            Assert.That(result.Content, Is.EqualTo("Well this is content hi"));
+            var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
+
+            TestFileContext.CreateBinaryFile("test.png", new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }); // empty png
+            var result = await File.WriteBytes(
+                new WriteBytesInput()
+                {
+                    ContentBytes = imageBytes,
+                    Path = Path.Combine(TestFileContext.RootPath, "test.png")
+                },
+                new WriteBytesOption()
+                {
+                    WriteBehaviour = WriteBehaviour.Append
+                });
+
+            var fileContentBytes = System.IO.File.ReadAllBytes(result.Path);
+
+            Assert.That(fileContentBytes.Length, Is.EqualTo(8 + imageBytes.Length));
         }
 
+        [Test]
+        public async Task WriteFileBytesOverwrite()
+        {
+            var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
+
+            TestFileContext.CreateBinaryFile("test.png", new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }); // empty png
+            var result = await File.WriteBytes(
+                new WriteBytesInput()
+                {
+                    ContentBytes = imageBytes,
+                    Path = Path.Combine(TestFileContext.RootPath, "test.png")
+                },
+                new WriteBytesOption()
+                {
+                    WriteBehaviour = WriteBehaviour.Overwrite
+                });
+
+            var fileContentBytes = System.IO.File.ReadAllBytes(result.Path);
+
+            Assert.That(fileContentBytes.Length, Is.EqualTo(imageBytes.Length));
+            Assert.That(fileContentBytes, Is.EqualTo(imageBytes));
+        }
+
+        [Test]
+        public async Task WriteFileBytesThrow()
+        {
+            var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
+
+            TestFileContext.CreateBinaryFile("test.png", new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }); // empty png
+            var result = await File.WriteBytes(
+                new WriteBytesInput()
+                {
+                    ContentBytes = imageBytes,
+                    Path = Path.Combine(TestFileContext.RootPath, "test.png")
+                },
+                new WriteBytesOption()
+                {
+                    WriteBehaviour = WriteBehaviour.Overwrite
+                });
+
+            var fileContentBytes = System.IO.File.ReadAllBytes(result.Path);
+
+            Assert.That(fileContentBytes.Length, Is.EqualTo(imageBytes.Length));
+            Assert.That(fileContentBytes, Is.EqualTo(imageBytes));
+        }
+
+        [Test]
+        public async Task ReadFileContent()
+        {
+            var fileContent = "Well this is content with some extra nice ümlauts: ÄÖåå 你好!";
+            TestFileContext.CreateFile("Folder/test.txt", fileContent);
+            var result = await File.Read(new ReadInput() { Path = Path.Combine(TestFileContext.RootPath, "folder/test.txt") }, new ReadOption() { });
+            Assert.That(result.Content, Is.EqualTo(fileContent));
+        }
+
+        [Test]
+        public async Task ReadFileContentBytes()
+        {
+            var result = await File.ReadBytes(new ReadInput() { Path = BinaryTestFilePath }, new ReadBytesOption() { });
+
+            var expectedData = System.IO.File.ReadAllBytes(BinaryTestFilePath);
+
+            Assert.That(result.ContentBytes.Length, Is.EqualTo(expectedData.Length));
+            Assert.That(result.ContentBytes, Is.EqualTo(expectedData));
+        }
 
         [Test]
         public async Task WriteReadFileWithLatin1()
         {
-            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ansi.txt"); //ansi is Latin1 here
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestFiles/ansi.txt"); //ansi is Latin1 here
             var res = await File.Read(
                 new ReadInput()
                 {
@@ -346,7 +425,7 @@ namespace Frends.File.Tests
         [Test]
         public async Task WriteReadFileWithUtf8NoBom()
         {
-            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "utf8nobom.txt");
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestFiles/utf8nobom.txt");
             var res = await File.Read(
                 new ReadInput()
                 {
@@ -363,7 +442,7 @@ namespace Frends.File.Tests
                 {
                     Content = res.Content,
                     Path = Path.Combine(TestFileContext.RootPath, "test.txt")
-                }, 
+                },
                 new WriteOption()
                 {
                     FileEncoding = FileEncoding.UTF8,
@@ -374,7 +453,6 @@ namespace Frends.File.Tests
             Assert.That(fileContent, Is.EqualTo("ÅÖÄåöä"));
         }
 
-
-
+        private static string BinaryTestFilePath => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestFiles/frends_favicon.png");
     }
 }

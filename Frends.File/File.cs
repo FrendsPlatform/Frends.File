@@ -17,9 +17,9 @@ namespace Frends.File
     public class File
     {
         /// <summary>
-        /// Read contents as string for a single file. See: https://github.com/FrendsPlatform/Frends.File
+        /// Read contents of a file as a string. See: https://github.com/FrendsPlatform/Frends.File#Read
         /// </summary>
-        /// <returns>Object {string Path, double SizeInMegaBytes, DateTime CreationTime, DateTime LastWriteTime }  </returns>
+        /// <returns>Object {string Content, string Path, double SizeInMegaBytes, DateTime CreationTime, DateTime LastWriteTime }  </returns>
         public static async Task<ReadResult> Read([CustomDisplay(DisplayOption.Tab)] ReadInput input, [CustomDisplay(DisplayOption.Tab)] ReadOption options)
         {
             return await ExecuteActionAsync(
@@ -31,7 +31,21 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Write string contents to a file. See: https://github.com/FrendsPlatform/Frends.File
+        /// Read contents of a file as a byte array. See: hhttps://github.com/FrendsPlatform/Frends.File#ReadBytes
+        /// </summary>
+        /// <returns>Object {byte[] ContentBytes, string Path, double SizeInMegaBytes, DateTime CreationTime, DateTime LastWriteTime }  </returns>
+        public static async Task<ReadBytesResult> ReadBytes([CustomDisplay(DisplayOption.Tab)] ReadInput input, [CustomDisplay(DisplayOption.Tab)] ReadBytesOption options)
+        {
+            return await ExecuteActionAsync(
+                    () => ExecuteReadBytes(input, options),
+                    options.UseGivenUserCredentialsForRemoteConnections,
+                    options.UserName,
+                    options.Password)
+                .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Write string contents to a file. See: https://github.com/FrendsPlatform/Frends.File#Write
         /// </summary>
         /// <returns>Object {string Path, double SizeInMegaBytes}</returns>
         public static async Task<WriteResult> Write([CustomDisplay(DisplayOption.Tab)] WriteInput input, [CustomDisplay(DisplayOption.Tab)] WriteOption options)
@@ -45,9 +59,23 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Get file information for files. See: https://github.com/FrendsPlatform/Frends.File
+        /// Write byte array to a file. See: https://github.com/FrendsPlatform/Frends.File#WriteBytes
         /// </summary>
-        ///  <returns>List [ Object  { string Extension, string DirectoryName, string FullPath, 
+        /// <returns>Object {string Path, double SizeInMegaBytes}</returns>
+        public static async Task<WriteResult> WriteBytes([CustomDisplay(DisplayOption.Tab)] WriteBytesInput input, [CustomDisplay(DisplayOption.Tab)] WriteBytesOption options)
+        {
+            return await ExecuteActionAsync(
+                    () => ExecuteWriteBytes(input, options),
+                    options.UseGivenUserCredentialsForRemoteConnections,
+                    options.UserName,
+                    options.Password)
+                .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get file information for files. See: https://github.com/FrendsPlatform/Frends.File#Find
+        /// </summary>
+        /// <returns>List [ Object  { string Extension, string DirectoryName, string FullPath,
         /// string FileName, bool IsReadOnly, double SizeInMegaBytes, DateTime CreationTime,
         /// DateTime CreationTimeUtc, DateTime LastAccessTime, DateTime LastAccessTimeUtc, DateTime LastWriteTime, DateTime LastWriteTimeUtc} ]</returns>
         public static List<FindResult> Find([CustomDisplay(DisplayOption.Tab)] FindInput input, [CustomDisplay(DisplayOption.Tab)] FindOption options)
@@ -56,50 +84,50 @@ namespace Frends.File
         }
 
         /// <summary>
-        /// Move files. See: https://github.com/FrendsPlatform/Frends.File
+        /// Move files. See: https://github.com/FrendsPlatform/Frends.File#Move
         /// </summary>
-        ///  <returns>List [ Object { string SourcePath, string Path } ]</returns>
-        public static async Task<IList<FileInBatchResult>>Move(
-            [CustomDisplay(DisplayOption.Tab)] MoveInput input, 
+        /// <returns>List [ Object { string SourcePath, string Path } ]</returns>
+        public static async Task<IList<FileInBatchResult>> Move(
+            [CustomDisplay(DisplayOption.Tab)] MoveInput input,
             [CustomDisplay(DisplayOption.Tab)] MoveOptions options,
             CancellationToken cancellationToken)
         {
-            return await ExecuteActionAsync(() => MoveCommand.ExecuteAsync(input, options, cancellationToken), 
-                options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);         
+            return await ExecuteActionAsync(() => MoveCommand.ExecuteAsync(input, options, cancellationToken),
+                options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);
         }
 
         /// <summary>
-        /// Copy files. See: https://github.com/FrendsPlatform/Frends.File
+        /// Copy files. See: https://github.com/FrendsPlatform/Frends.File#Copy
         /// </summary>
-        ///  <returns>List [ Object { string SourcePath, string Path } ]</returns>
+        /// <returns>List [ Object { string SourcePath, string Path } ]</returns>
         public static async Task<IList<FileInBatchResult>> Copy(
-            [CustomDisplay(DisplayOption.Tab)] CopyInput input, 
+            [CustomDisplay(DisplayOption.Tab)] CopyInput input,
             [CustomDisplay(DisplayOption.Tab)] CopyOptions options,
             CancellationToken cancellationToken)
         {
-            return await ExecuteActionAsync(() => CopyCommand.ExecuteAsync(input, options, cancellationToken), 
+            return await ExecuteActionAsync(() => CopyCommand.ExecuteAsync(input, options, cancellationToken),
                 options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Delete files. See: https://github.com/FrendsPlatform/Frends.File
+        /// Delete files. See: https://github.com/FrendsPlatform/Frends.File#Delete
         /// </summary>
-        ///  <returns>List [ Object { string Path, string SizeInMegaBytes } ]</returns>
+        /// <returns>List [ Object { string Path, string SizeInMegaBytes } ]</returns>
         public static List<DeleteResult> Delete(
-            [CustomDisplay(DisplayOption.Tab)] DeleteInput input, 
+            [CustomDisplay(DisplayOption.Tab)] DeleteInput input,
             [CustomDisplay(DisplayOption.Tab)] DeleteOption options,
             CancellationToken cancellationToken)
         {
-            return ExecuteAction(() => ExecuteDelete(input, cancellationToken), options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);         
+            return ExecuteAction(() => ExecuteDelete(input, cancellationToken), options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);
         }
 
         /// <summary>
-        /// Rename a single file. See: https://github.com/FrendsPlatform/Frends.File
+        /// Rename a single file. See: https://github.com/FrendsPlatform/Frends.File#Rename
         /// </summary>
         ///  <returns>Object { string Path }</returns>
         public static RenameResult Rename([CustomDisplay(DisplayOption.Tab)] RenameInput input, [CustomDisplay(DisplayOption.Tab)] RenameOption options)
         {
-            return ExecuteAction(() => ExecuteRename(input, options.RenameBehaviour), options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);           
+            return ExecuteAction(() => ExecuteRename(input, options.RenameBehaviour), options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);
         }
 
         private static async Task<TResult> ExecuteActionAsync<TResult>(Func<Task<TResult>> action, bool useGivenCredentials, string userName, string password)
@@ -150,10 +178,22 @@ namespace Frends.File
         {
             var encoding = GetEncoding(options.FileEncoding, options.EnableBom, options.EncodingInString);
 
-            using (var reader = new StreamReader(input.Path, encoding))
+            using (var fileStream = new FileStream(input.Path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+            using (var reader = new StreamReader(fileStream, encoding, detectEncodingFromByteOrderMarks: true))
             {
                 var content = await reader.ReadToEndAsync().ConfigureAwait(false);
                 return new ReadResult(new FileInfo(input.Path), content);
+            }
+        }
+
+        private static async Task<ReadBytesResult> ExecuteReadBytes(ReadInput input, ReadBytesOption options)
+        {
+            using (var file = new FileStream(input.Path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+            {
+                var buffer = new byte[file.Length];
+                await file.ReadAsync(buffer, 0, (int)file.Length).ConfigureAwait(false);
+
+                return new ReadBytesResult(new FileInfo(input.Path), buffer);
             }
         }
 
@@ -189,7 +229,7 @@ namespace Frends.File
             }
             System.IO.File.Move(input.Path, newFileFullPath);
             return new RenameResult(newFileFullPath);
-        }        
+        }
 
         internal static string GetNonConflictingDestinationFilePath(string sourceFilePath, string destFilePath)
         {
@@ -204,7 +244,7 @@ namespace Frends.File
         }
 
         private static List<DeleteResult> ExecuteDelete(DeleteInput input, CancellationToken cancellationToken)
-        {            
+        {
             var results = FindMatchingFiles(input.Directory, input.Pattern);
 
             var fileResults = new List<DeleteResult>();
@@ -231,31 +271,55 @@ namespace Frends.File
         private static async Task<WriteResult> ExecuteWrite(WriteInput input, WriteOption options)
         {
             var encoding = GetEncoding(options.FileEncoding, options.EnableBom, options.EncodingInString);
-            var append = false;
+            var fileMode = GetAndCheckWriteMode(options.WriteBehaviour, input.Path);
 
-            switch (options.WriteBehaviour)
-            {
-                case WriteBehaviour.Append:
-                    append = true;
-                    break;
-                case WriteBehaviour.Overwrite:
-                    break;
-                case WriteBehaviour.Throw:
-                    if (System.IO.File.Exists(input.Path))
-                    {
-                        throw new IOException($"File already exists: {input.Path}");
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            using (var writer = new StreamWriter(input.Path, append, encoding))
+            using (var fileStream = new FileStream(input.Path, fileMode, FileAccess.Write, FileShare.Write, 4096, useAsync: true))
+            using (var writer = new StreamWriter(fileStream, encoding))
             {
                 await writer.WriteAsync(input.Content).ConfigureAwait(false);
             }
 
             return new WriteResult(new FileInfo(input.Path));
+        }
+
+        private static async Task<WriteResult> ExecuteWriteBytes(WriteBytesInput input, WriteBytesOption options)
+        {
+            var bytes = input?.ContentBytes as byte[]; // TODO: Use corrctly typed input once UI support expression default editor for arrays
+            if (bytes == null)
+            {
+                throw new ArgumentException("Input.ContentBytes must be a byte array", nameof(input.ContentBytes));
+            }
+
+            var fileMode = GetAndCheckWriteMode(options.WriteBehaviour, input.Path);
+
+            using (var fileStream = new FileStream(input.Path, fileMode, FileAccess.Write, FileShare.Write, 4096, useAsync: true))
+            {
+                var memoryStream = new MemoryStream(bytes);
+                await memoryStream.CopyToAsync(fileStream).ConfigureAwait(false);
+            }
+
+            return new WriteResult(new FileInfo(input.Path));
+        }
+
+        private static FileMode GetAndCheckWriteMode(WriteBehaviour givenWriteBehaviour, string filePath)
+        {
+            switch (givenWriteBehaviour)
+            {
+                case WriteBehaviour.Append:
+                    return FileMode.Append;
+
+                case WriteBehaviour.Overwrite:
+                    return FileMode.Create;
+
+                case WriteBehaviour.Throw:
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        throw new IOException($"File already exists: {filePath}");
+                    }
+                    return FileMode.Create;
+                default:
+                    throw new ArgumentException("Unsupported write option: " + givenWriteBehaviour);
+            }
         }
 
         #endregion
