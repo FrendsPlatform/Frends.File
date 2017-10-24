@@ -71,7 +71,7 @@ Options:
 | Property                                    | Type           | Description                                    | Example                   |
 |---------------------------------------------|----------------|------------------------------------------------|---------------------------|
 | UseGivenUserCredentialsForRemoteConnections | bool           | If set, allows you to give the user credentials to use to read files on remote hosts. If not set, the agent service user credentials will be used. Note: For deleting directories on the local machine, the agent service user credentials will always be used, even if this option is set.| |
-| UserName                                    | string         | Needs to be of format domain\username | `example\Admin` |
+| UserName                                    | string         | Needs to be of format `domain\username`        | `example\Admin`           |
 | Password                                    | string         | | |
 | FileEncoding                                | Enum           | Encoding for the read content. By selecting 'Other' you can use any encoding. | |
 | EncodingInString                            | string         | The name of encoding to use. Required if the FileEncoding choice is 'Other'. A partial list of supported encoding names: https://msdn.microsoft.com/en-us/library/system.text.encoding.getencodings(v=vs.110).aspx | `iso-8859-1` |
@@ -92,8 +92,8 @@ File.ReadBytes task reads contents of a file as a byte array.
 
 Input:
 
-| Property        | Type     | Description                       | Example                 |
-|-----------------|----------|-----------------------------------|-------------------------------------|
+| Property        | Type     | Description                       | Example                               |
+|-----------------|----------|-----------------------------------|---------------------------------------|
 | Path            | string   | Full path to the file to be read. | `c:\temp\img1.png` `c:/temp/img2.png` |
 
 Options:
@@ -101,10 +101,8 @@ Options:
 | Property                                    | Type           | Description                                    | Example                   |
 |---------------------------------------------|----------------|------------------------------------------------|---------------------------|
 | UseGivenUserCredentialsForRemoteConnections | bool           | If set, allows you to give the user credentials to use to read files on remote hosts. If not set, the agent service user credentials will be used. Note: For deleting directories on the local machine, the agent service user credentials will always be used, even if this option is set.| |
-| UserName                                    | string         | Needs to be of format domain\username | `example\Admin` |
-| Password                                    | string         | | |
-| FileEncoding                                | Enum           | Encoding for the read content. By selecting 'Other' you can use any encoding. | |
-| EncodingInString                            | string         | The name of encoding to use. Required if the FileEncoding choice is 'Other'. A partial list of supported encoding names: https://msdn.microsoft.com/en-us/library/system.text.encoding.getencodings(v=vs.110).aspx | `iso-8859-1` |
+| UserName                                    | string         | Needs to be of format `domain\username`        | `example\Admin`           |
+| Password                                    | string         |                                                |                           |
 
 Result:
 
@@ -132,7 +130,7 @@ Options:
 | Property                                    | Type           | Description                                    | Example                   |
 |---------------------------------------------|----------------|------------------------------------------------|---------------------------|
 | UseGivenUserCredentialsForRemoteConnections | bool           | If set, allows you to give the user credentials to use to write files on remote hosts. If not set, the agent service user credentials will be used. Note: For deleting directories on the local machine, the agent service user credentials will always be used, even if this option is set.| |
-| UserName                                    | string         | Needs to be of format domain\username | `example\Admin` |
+| UserName                                    | string         | Needs to be of format `domain\username`        | `example\Admin`           |
 | Password                                    | string         | | |
 | FileEncoding                                | Enum           | Encoding for the content. By selecting 'Other' you can use any encoding. | |
 | EncodingInString                            | string         | This should be filled if the FileEncoding choice is 'Other' A partial list of possible encodings: https://en.wikipedia.org/wiki/Windows_code_page#List | `iso-8859-1` |
@@ -162,11 +160,8 @@ Options:
 | Property                                    | Type           | Description                                    | Example                   |
 |---------------------------------------------|----------------|------------------------------------------------|---------------------------|
 | UseGivenUserCredentialsForRemoteConnections | bool           | If set, allows you to give the user credentials to use to write files on remote hosts. If not set, the agent service user credentials will be used. Note: For deleting directories on the local machine, the agent service user credentials will always be used, even if this option is set.| |
-| UserName                                    | string         | Needs to be of format domain\username | `example\Admin` |
-| Password                                    | string         | | |
-| FileEncoding                                | Enum           | Encoding for the content. By selecting 'Other' you can use any encoding. | |
-| EncodingInString                            | string         | This should be filled if the FileEncoding choice is 'Other' A partial list of possible encodings: https://en.wikipedia.org/wiki/Windows_code_page#List | `iso-8859-1` |
-| EnableBom                                   | bool           | Visible if UTF-8 is used as the option for FileEncoding. | |
+| UserName                                    | string         | Needs to be of format `domain\username`        | `example\Admin`           |
+| Password                                    | string         |                                                |                           |
 | WriteBehaviour                              | Enum{Append,Overwrite,Throw} | Determines how the File.Write works when the destination file already exists | |
 
 Result:

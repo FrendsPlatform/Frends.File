@@ -34,7 +34,7 @@ namespace Frends.File
         /// Read contents of a file as a byte array. See: hhttps://github.com/FrendsPlatform/Frends.File#ReadBytes
         /// </summary>
         /// <returns>Object {byte[] ContentBytes, string Path, double SizeInMegaBytes, DateTime CreationTime, DateTime LastWriteTime }  </returns>
-        public static async Task<ReadBytesResult> ReadBytes([CustomDisplay(DisplayOption.Tab)] ReadInput input, [CustomDisplay(DisplayOption.Tab)] ReadOption options)
+        public static async Task<ReadBytesResult> ReadBytes([CustomDisplay(DisplayOption.Tab)] ReadInput input, [CustomDisplay(DisplayOption.Tab)] ReadBytesOption options)
         {
             return await ExecuteActionAsync(
                     () => ExecuteReadBytes(input, options),
@@ -62,7 +62,7 @@ namespace Frends.File
         /// Write byte array to a file. See: https://github.com/FrendsPlatform/Frends.File#WriteBytes
         /// </summary>
         /// <returns>Object {string Path, double SizeInMegaBytes}</returns>
-        public static async Task<WriteResult> WriteBytes([CustomDisplay(DisplayOption.Tab)] WriteBytesInput input, [CustomDisplay(DisplayOption.Tab)] WriteOption options)
+        public static async Task<WriteResult> WriteBytes([CustomDisplay(DisplayOption.Tab)] WriteBytesInput input, [CustomDisplay(DisplayOption.Tab)] WriteBytesOption options)
         {
             return await ExecuteActionAsync(
                     () => ExecuteWriteBytes(input, options),
@@ -186,7 +186,7 @@ namespace Frends.File
             }
         }
 
-        private static async Task<ReadBytesResult> ExecuteReadBytes(ReadInput input, ReadOption options)
+        private static async Task<ReadBytesResult> ExecuteReadBytes(ReadInput input, ReadBytesOption options)
         {
             using (var file = new FileStream(input.Path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
             {
@@ -282,7 +282,7 @@ namespace Frends.File
             return new WriteResult(new FileInfo(input.Path));
         }
 
-        private static async Task<WriteResult> ExecuteWriteBytes(WriteBytesInput input, WriteOption options)
+        private static async Task<WriteResult> ExecuteWriteBytes(WriteBytesInput input, WriteBytesOption options)
         {
             var bytes = input?.ContentBytes as byte[]; // TODO: Use corrctly typed input once UI support expression default editor for arrays
             if (bytes == null)

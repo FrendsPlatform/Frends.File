@@ -323,7 +323,7 @@ namespace Frends.File.Tests
                     ContentBytes = imageBytes,
                     Path = Path.Combine(TestFileContext.RootPath, "test.png")
                 },
-                new WriteOption()
+                new WriteBytesOption()
                 {
                     WriteBehaviour = WriteBehaviour.Append
                 });
@@ -345,7 +345,7 @@ namespace Frends.File.Tests
                     ContentBytes = imageBytes,
                     Path = Path.Combine(TestFileContext.RootPath, "test.png")
                 },
-                new WriteOption()
+                new WriteBytesOption()
                 {
                     WriteBehaviour = WriteBehaviour.Overwrite
                 });
@@ -368,7 +368,7 @@ namespace Frends.File.Tests
                     ContentBytes = imageBytes,
                     Path = Path.Combine(TestFileContext.RootPath, "test.png")
                 },
-                new WriteOption()
+                new WriteBytesOption()
                 {
                     WriteBehaviour = WriteBehaviour.Overwrite
                 });
@@ -391,7 +391,7 @@ namespace Frends.File.Tests
         [Test]
         public async Task ReadFileContentBytes()
         {
-            var result = await File.ReadBytes(new ReadInput() { Path = BinaryTestFilePath }, new ReadOption() { });
+            var result = await File.ReadBytes(new ReadInput() { Path = BinaryTestFilePath }, new ReadBytesOption() { });
 
             var expectedData = System.IO.File.ReadAllBytes(BinaryTestFilePath);
 

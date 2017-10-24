@@ -240,6 +240,32 @@ namespace Frends.File
         public WriteBehaviour WriteBehaviour { get; set; }
     }
 
+    public class WriteBytesOption
+    {
+        /// <summary>
+        /// If set, allows you to give the user credentials to use to write files on remote hosts.
+        /// If not set, the agent service user credentials will be used.
+        /// Note: For writing files on the local machine, the agent service user credentials will always be used, even if this option is set.
+        /// </summary>
+        public bool UseGivenUserCredentialsForRemoteConnections { get; set; }
+
+        /// <summary>
+        /// This needs to be of format domain\username
+        /// </summary>
+        [DefaultValue("\"domain\\username\"")]
+        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        public string UserName { get; set; }
+
+        [PasswordPropertyText]
+        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        public string Password { get; set; }
+
+        /// <summary>
+        /// How the file write should work if a file with the new name already exists
+        /// </summary>
+        public WriteBehaviour WriteBehaviour { get; set; }
+    }
+
     public class WriteResult
     {
         public WriteResult(FileInfo info)
@@ -293,6 +319,27 @@ namespace Frends.File
         /// </summary>
         [ConditionalDisplay(nameof(FileEncoding), FileEncoding.Other)]
         public string EncodingInString { get; set; }
+    }
+
+    public class ReadBytesOption
+    {
+        /// <summary>
+        /// If set, allows you to give the user credentials to use to read files on remote hosts.
+        /// If not set, the agent service user credentials will be used.
+        /// Note: For reading files on the local machine, the agent service user credentials will always be used, even if this option is set.
+        /// </summary>
+        public bool UseGivenUserCredentialsForRemoteConnections { get; set; }
+
+        /// <summary>
+        /// This needs to be of format domain\username
+        /// </summary>
+        [DefaultValue("\"domain\\username\"")]
+        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        public string UserName { get; set; }
+
+        [PasswordPropertyText]
+        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        public string Password { get; set; }
     }
 
     public class ReadResult
