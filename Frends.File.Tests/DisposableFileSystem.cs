@@ -30,6 +30,16 @@ namespace Frends.File.Tests
             return this;
         }
 
+        public DisposableFileSystem CreateBinaryFile(string path, byte[] contentBytes)
+        {
+            var filePath = Path.Combine(RootPath, path);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+            System.IO.File.WriteAllBytes(filePath, contentBytes);
+
+            return this;
+        }
+
         public DisposableFileSystem CreateFiles(params string[] fileRelativePaths)
         {
             foreach (var path in fileRelativePaths)
