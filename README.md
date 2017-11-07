@@ -323,7 +323,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Building
 ========
-Ensure that you have `https://www.myget.org/F/frends/api/v2` added to your nuget feeds
 
 Clone a copy of the repo
 
