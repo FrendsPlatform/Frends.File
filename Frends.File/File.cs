@@ -1,10 +1,10 @@
 ﻿using SimpleImpersonation;
-using Frends.Tasks.Attributes;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +20,7 @@ namespace Frends.File
         /// Read contents of a file as a string. See: https://github.com/FrendsPlatform/Frends.File#Read
         /// </summary>
         /// <returns>Object {string Content, string Path, double SizeInMegaBytes, DateTime CreationTime, DateTime LastWriteTime }  </returns>
-        public static async Task<ReadResult> Read([CustomDisplay(DisplayOption.Tab)] ReadInput input, [CustomDisplay(DisplayOption.Tab)] ReadOption options)
+        public static async Task<ReadResult> Read([PropertyTab] ReadInput input, [PropertyTab] ReadOption options)
         {
             return await ExecuteActionAsync(
                     () => ExecuteRead(input, options),
@@ -34,7 +34,7 @@ namespace Frends.File
         /// Read contents of a file as a byte array. See: hhttps://github.com/FrendsPlatform/Frends.File#ReadBytes
         /// </summary>
         /// <returns>Object {byte[] ContentBytes, string Path, double SizeInMegaBytes, DateTime CreationTime, DateTime LastWriteTime }  </returns>
-        public static async Task<ReadBytesResult> ReadBytes([CustomDisplay(DisplayOption.Tab)] ReadInput input, [CustomDisplay(DisplayOption.Tab)] ReadBytesOption options)
+        public static async Task<ReadBytesResult> ReadBytes([PropertyTab] ReadInput input, [PropertyTab] ReadBytesOption options)
         {
             return await ExecuteActionAsync(
                     () => ExecuteReadBytes(input, options),
@@ -48,7 +48,7 @@ namespace Frends.File
         /// Write string contents to a file. See: https://github.com/FrendsPlatform/Frends.File#Write
         /// </summary>
         /// <returns>Object {string Path, double SizeInMegaBytes}</returns>
-        public static async Task<WriteResult> Write([CustomDisplay(DisplayOption.Tab)] WriteInput input, [CustomDisplay(DisplayOption.Tab)] WriteOption options)
+        public static async Task<WriteResult> Write([PropertyTab] WriteInput input, [PropertyTab] WriteOption options)
         {
             return await ExecuteActionAsync(
                     () => ExecuteWrite(input, options),
@@ -62,7 +62,7 @@ namespace Frends.File
         /// Write byte array to a file. See: https://github.com/FrendsPlatform/Frends.File#WriteBytes
         /// </summary>
         /// <returns>Object {string Path, double SizeInMegaBytes}</returns>
-        public static async Task<WriteResult> WriteBytes([CustomDisplay(DisplayOption.Tab)] WriteBytesInput input, [CustomDisplay(DisplayOption.Tab)] WriteBytesOption options)
+        public static async Task<WriteResult> WriteBytes([PropertyTab] WriteBytesInput input, [PropertyTab] WriteBytesOption options)
         {
             return await ExecuteActionAsync(
                     () => ExecuteWriteBytes(input, options),
@@ -78,7 +78,7 @@ namespace Frends.File
         /// <returns>List [ Object  { string Extension, string DirectoryName, string FullPath,
         /// string FileName, bool IsReadOnly, double SizeInMegaBytes, DateTime CreationTime,
         /// DateTime CreationTimeUtc, DateTime LastAccessTime, DateTime LastAccessTimeUtc, DateTime LastWriteTime, DateTime LastWriteTimeUtc} ]</returns>
-        public static List<FindResult> Find([CustomDisplay(DisplayOption.Tab)] FindInput input, [CustomDisplay(DisplayOption.Tab)] FindOption options)
+        public static List<FindResult> Find([PropertyTab] FindInput input, [PropertyTab] FindOption options)
         {
             return ExecuteAction(() => ExecuteFind(input), options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);
         }
@@ -88,8 +88,8 @@ namespace Frends.File
         /// </summary>
         /// <returns>List [ Object { string SourcePath, string Path } ]</returns>
         public static async Task<IList<FileInBatchResult>> Move(
-            [CustomDisplay(DisplayOption.Tab)] MoveInput input,
-            [CustomDisplay(DisplayOption.Tab)] MoveOptions options,
+            [PropertyTab] MoveInput input,
+            [PropertyTab] MoveOptions options,
             CancellationToken cancellationToken)
         {
             return await ExecuteActionAsync(() => MoveCommand.ExecuteAsync(input, options, cancellationToken),
@@ -101,8 +101,8 @@ namespace Frends.File
         /// </summary>
         /// <returns>List [ Object { string SourcePath, string Path } ]</returns>
         public static async Task<IList<FileInBatchResult>> Copy(
-            [CustomDisplay(DisplayOption.Tab)] CopyInput input,
-            [CustomDisplay(DisplayOption.Tab)] CopyOptions options,
+            [PropertyTab] CopyInput input,
+            [PropertyTab] CopyOptions options,
             CancellationToken cancellationToken)
         {
             return await ExecuteActionAsync(() => CopyCommand.ExecuteAsync(input, options, cancellationToken),
@@ -114,8 +114,8 @@ namespace Frends.File
         /// </summary>
         /// <returns>List [ Object { string Path, string SizeInMegaBytes } ]</returns>
         public static List<DeleteResult> Delete(
-            [CustomDisplay(DisplayOption.Tab)] DeleteInput input,
-            [CustomDisplay(DisplayOption.Tab)] DeleteOption options,
+            [PropertyTab] DeleteInput input,
+            [PropertyTab] DeleteOption options,
             CancellationToken cancellationToken)
         {
             return ExecuteAction(() => ExecuteDelete(input, cancellationToken), options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);
@@ -125,7 +125,7 @@ namespace Frends.File
         /// Rename a single file. See: https://github.com/FrendsPlatform/Frends.File#Rename
         /// </summary>
         ///  <returns>Object { string Path }</returns>
-        public static RenameResult Rename([CustomDisplay(DisplayOption.Tab)] RenameInput input, [CustomDisplay(DisplayOption.Tab)] RenameOption options)
+        public static RenameResult Rename([PropertyTab] RenameInput input, [PropertyTab] RenameOption options)
         {
             return ExecuteAction(() => ExecuteRename(input, options.RenameBehaviour), options.UseGivenUserCredentialsForRemoteConnections, options.UserName, options.Password);
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
-using Frends.Tasks.Attributes;
 #pragma warning disable 1591
 
 namespace Frends.File
@@ -33,11 +33,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
     }
 
@@ -78,11 +78,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
 
         /// <summary>
@@ -127,11 +127,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
     }
 
@@ -190,7 +190,7 @@ namespace Frends.File
         /// <summary>
         /// Byte array to be written to the file
         /// </summary>
-        [DefaultDisplayType(DisplayType.Expression)]
+        [DisplayFormat(DataFormatString = "Expression")]
         public object ContentBytes { get; set; }
 
         /// <summary>
@@ -213,11 +213,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
 
         /// <summary>
@@ -225,13 +225,13 @@ namespace Frends.File
         /// </summary>
         public FileEncoding FileEncoding { get; set; }
 
-        [ConditionalDisplay(nameof(FileEncoding), FileEncoding.UTF8)]
+        [UIHint(nameof(FileEncoding), "", FileEncoding.UTF8)]
         public bool EnableBom { get; set; }
 
         /// <summary>
         /// File encoding to be used. A partial list of possible encodings: https://en.wikipedia.org/wiki/Windows_code_page#List
         /// </summary>
-        [ConditionalDisplay(nameof(FileEncoding), FileEncoding.Other)]
+        [UIHint(nameof(FileEncoding), "", FileEncoding.Other)]
         public string EncodingInString { get; set; }
 
         /// <summary>
@@ -253,11 +253,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
 
         /// <summary>
@@ -299,11 +299,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
 
         /// <summary>
@@ -311,13 +311,13 @@ namespace Frends.File
         /// </summary>
         public FileEncoding FileEncoding { get; set; }
 
-        [ConditionalDisplay(nameof(FileEncoding), FileEncoding.UTF8)]
+        [UIHint(nameof(FileEncoding), "", FileEncoding.UTF8)]
         public bool EnableBom { get; set; }
 
         /// <summary>
         /// File encoding to be used. A partial list of possible encodings: https://en.wikipedia.org/wiki/Windows_code_page#List
         /// </summary>
-        [ConditionalDisplay(nameof(FileEncoding), FileEncoding.Other)]
+        [UIHint(nameof(FileEncoding), "", FileEncoding.Other)]
         public string EncodingInString { get; set; }
     }
 
@@ -334,11 +334,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
     }
 

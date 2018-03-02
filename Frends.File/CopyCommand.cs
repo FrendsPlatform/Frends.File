@@ -1,10 +1,7 @@
-﻿using Frends.Tasks.Attributes;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,7 +40,7 @@ namespace Frends.File
         public string Directory { get; set; }
 
         /// <summary>
-        /// Pattern to match for files. 
+        /// Pattern to match for files.
         /// </summary>
         [DefaultValue("\"**\\Folder\\*.xml\"")]
         public string Pattern { get; set; }
@@ -58,7 +55,7 @@ namespace Frends.File
     public class CopyOptions : IFileBatchOptions
     {
         /// <summary>
-        /// If set, allows you to give the user credentials to use to copy files on remote hosts. 
+        /// If set, allows you to give the user credentials to use to copy files on remote hosts.
         /// If not set, the agent service user credentials will be used.
         /// Note: For copying files on the local machine, the agent service user credentials will always be used, even if this option is set.
         /// </summary>
@@ -68,11 +65,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections),"", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [ConditionalDisplay(nameof(UseGivenUserCredentialsForRemoteConnections), true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections),"", true)]
         public string Password { get; set; }
 
         /// <summary>
@@ -81,17 +78,17 @@ namespace Frends.File
         public bool PreserveDirectoryStructure { get; set; }
 
         /// <summary>
-        /// If set, will create the target directory if it does not exist, 
+        /// If set, will create the target directory if it does not exist,
         /// as well as any sub directories if <see cref="PreserveDirectoryStructure"/> is set.
         /// </summary>
         [DefaultValue(true)]
         public bool CreateTargetDirectories { get; set; }
 
         /// <summary>
-        /// What should happen if a file with the same name already exists in the target directory. 
-        /// * Throw - Throw an error and roll back all transfers 
-        /// * Overwrite - Overwrites the target file 
-        /// * Rename - Renames the transferred file by appending a number to the end 
+        /// What should happen if a file with the same name already exists in the target directory.
+        /// * Throw - Throw an error and roll back all transfers
+        /// * Overwrite - Overwrites the target file
+        /// * Rename - Renames the transferred file by appending a number to the end
         /// </summary>
         public FileExistsAction IfTargetFileExists { get; set; }
     }
