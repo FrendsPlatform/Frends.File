@@ -207,7 +207,9 @@ Result is a list of objects with following properties:
 | LastWriteTimeUtc  | DateTime |                                   |
 
 ## Move
-The File.Move task is used for moving one or more files from a directory to another. The task uses [pattern matching](#pattern-matching) for finding files to move.
+The File.Move task is used for moving one or more files from a directory to another. The task uses [pattern matching](#pattern-matching) for finding files to move. 
+
+When moving many files, they are moved one at a time. If there is an error during the move operation, the file transfers will stop, and any files already transferred will be removed from the target directory.
 
 Input:
 
@@ -237,6 +239,8 @@ Result is a list of objects with following properties:
 
 ## Copy
 The File.Copy task is used for copying one or more files from a directory to another. The task uses [pattern matching](#pattern-matching) for finding files to copy.
+
+When copying many files, they are copied one at a time. If there is an error during the operation, the file transfers will stop, and any files already transferred will be removed from the target directory.
 
 Input:
 
