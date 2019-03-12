@@ -4,23 +4,22 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using System.Threading;
+using Xunit;
 
 namespace Frends.File.Tests
 {
-    [TestFixture]
+
     public class UnitTest : FileTestBase
     {
-        [SetUp]
-        public void CreateFileContext()
+        public UnitTest()
         {
             TestFileContext.CreateFiles(
                     "folder/foo/sub/test.xml",
                     "folder/bar/sub/example.xml");
         }
 
-        [Test]
+        [Fact]
         public void FileDeleteWithPatternMatching()
         {
             var results = File.Delete(
@@ -32,10 +31,10 @@ namespace Frends.File.Tests
                 new DeleteOption() { },
                 CancellationToken.None);
 
-            Assert.That(results.Count, Is.EqualTo(2));
+            Assert.Equal(2, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void FileDeleteShouldNotThrowIfNoFilesFound()
         {
             var results = File.Delete(
@@ -47,16 +46,16 @@ namespace Frends.File.Tests
                 new DeleteOption() { },
                 CancellationToken.None);
 
-            Assert.That(results.Count, Is.EqualTo(0));
+            Assert.Empty(results);
         }
 
-        [Test]
+        [Fact]
         public async Task FileMoveOverWrite()
         {
             const string contentForFileToBeOverwritten = "firstFile";
             TestFileContext.CreateFile("folder/test.xml", contentForFileToBeOverwritten);
             var createdFile = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder/test.xml"));
-            Assert.That(createdFile, Is.EqualTo(contentForFileToBeOverwritten));
+            Assert.Equal(contentForFileToBeOverwritten, createdFile);
 
             var results = await File.Move(
                 new MoveInput()
@@ -72,11 +71,11 @@ namespace Frends.File.Tests
                 CancellationToken.None);
 
             var overWrittenFIle = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder/test.xml"));
-            Assert.That(overWrittenFIle, Is.Not.EqualTo(contentForFileToBeOverwritten));
-            Assert.That(results.Count.Equals(2));
+            Assert.NotEqual(contentForFileToBeOverwritten, overWrittenFIle);
+            Assert.Equal(2, results.Count);
 
             var destinationFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder")).Length;
-            Assert.That(destinationFilesLength, Is.EqualTo(2));
+            Assert.Equal(2, destinationFilesLength);
 
             var secondMoveShouldBeEmpty = await File.Move(
                 new MoveInput()
@@ -91,10 +90,10 @@ namespace Frends.File.Tests
                 },
                 CancellationToken.None);
 
-            Assert.That(secondMoveShouldBeEmpty, Is.Empty);
+            Assert.Empty(secondMoveShouldBeEmpty);
         }
 
-        [Test]
+        [Fact]
         public async Task FileMoveCopy()
         {
             const string contentForOriginalFile = "firstFile";
@@ -110,14 +109,14 @@ namespace Frends.File.Tests
                 new MoveOptions() { IfTargetFileExists = FileExistsAction.Rename },
                 CancellationToken.None);
 
-            Assert.That(results.Count, Is.EqualTo(2));
+            Assert.Equal(2, results.Count);
             var originalFile = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder\\test.xml"));
             var copiedFile = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder\\test(1).xml"));
-            Assert.That(originalFile, Is.EqualTo(contentForOriginalFile));
-            Assert.That(copiedFile, Does.StartWith("Automatically generated for testing on"));
+            Assert.Equal(contentForOriginalFile, originalFile);
+            Assert.StartsWith("Automatically generated for testing on", copiedFile);
 
             var destinationFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder")).Length;
-            Assert.That(destinationFilesLength, Is.EqualTo(3));
+            Assert.Equal(3, destinationFilesLength);
 
             var secondMoveShouldBeEmpty = await File.Move(
                 new MoveInput()
@@ -128,16 +127,16 @@ namespace Frends.File.Tests
                 },
                 new MoveOptions() { IfTargetFileExists = FileExistsAction.Rename },
                 CancellationToken.None);
-            Assert.That(secondMoveShouldBeEmpty, Is.Empty);
+            Assert.Empty(secondMoveShouldBeEmpty);
         }
 
-        [Test]
-        public void FileMoveThrowShouldThrowIfFIleExistsAtDestination()
+        [Fact]
+        public async Task FileMoveThrowShouldThrowIfFIleExistsAtDestination()
         {
             const string contentForOriginalFile = "firstFile";
             TestFileContext.CreateFile("folder/test.xml", contentForOriginalFile);
 
-            var ex = Assert.ThrowsAsync<IOException>(async () => await File.Move(
+            var ex = await Assert.ThrowsAsync<IOException>(async () => await File.Move(
                 new MoveInput()
                 {
                     Directory = TestFileContext.RootPath,
@@ -150,22 +149,22 @@ namespace Frends.File.Tests
                 },
                 CancellationToken.None));
 
-            Assert.That(ex.Message, Is.EqualTo($"File '{Path.Combine(TestFileContext.RootPath, "folder\\test.xml")}' already exists. No files moved."));
+            Assert.Equal($"File '{Path.Combine(TestFileContext.RootPath, "folder\\test.xml")}' already exists. No files moved.", ex.Message);
 
             var originalFile = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder\\test.xml"));
-            Assert.That(originalFile, Is.EqualTo(contentForOriginalFile));
+            Assert.Equal(contentForOriginalFile, originalFile);
 
-            var destinationFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder")).Length;
-            Assert.That(destinationFilesLength, Is.EqualTo(1));
+            var destinationFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder"));
+            Assert.Single(destinationFilesLength);
 
-            var sourceFolder1 = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/")).Length;
-            Assert.That(sourceFolder1, Is.EqualTo(1));
+            var sourceFolder1 = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/"));
+            Assert.Single(sourceFolder1);
 
-            var sourceFolder2 = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/bar/sub/")).Length;
-            Assert.That(sourceFolder2, Is.EqualTo(1));
+            var sourceFolder2 = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/bar/sub/"));
+            Assert.Single(sourceFolder2);
         }
 
-        [Test]
+        [Fact]
         public void RenameFile()
         {
             var resultsOverWrite = File.Rename(
@@ -179,7 +178,7 @@ namespace Frends.File.Tests
                     RenameBehaviour = FileExistsAction.Overwrite
                 });
 
-            Assert.That(resultsOverWrite.Path, Is.EqualTo(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest.xml")));
+            Assert.Equal(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest.xml"), resultsOverWrite.Path);
 
             var resultsCopy = File.Rename(
                 new RenameInput()
@@ -192,7 +191,7 @@ namespace Frends.File.Tests
                     RenameBehaviour = FileExistsAction.Rename
                 });
 
-            Assert.That(resultsCopy.Path, Is.EqualTo(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest(1).xml")));
+            Assert.Equal(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest(1).xml"), resultsCopy.Path);
 
             var results = File.Rename(
                 new RenameInput()
@@ -205,9 +204,9 @@ namespace Frends.File.Tests
                     RenameBehaviour = FileExistsAction.Throw
                 });
 
-            Assert.That(results.Path, Is.EqualTo(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest.xml")));
-            var folderFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/")).Length;
-            Assert.That(folderFilesLength, Is.EqualTo(1));
+            Assert.Equal(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest.xml"), results.Path);
+            var folderFiles = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/"));
+            Assert.Single(folderFiles);
             TestFileContext.CreateFile("folder/foo/sub/throwTest.xml", "temp");
 
             var ex = Assert.Throws<IOException>(() => File.Rename(
@@ -221,13 +220,13 @@ namespace Frends.File.Tests
                     RenameBehaviour = FileExistsAction.Throw
                 }));
 
-            Assert.That(ex.Message, Does.Contain("throwTest.xml"));
+            Assert.Contains("throwTest.xml", ex.Message);
 
-            folderFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/")).Length;
-            Assert.That(folderFilesLength, Is.EqualTo(2));
+            folderFiles = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/"));
+            Assert.Equal(2, folderFiles.Length);
         }
 
-        [Test]
+        [Fact]
         public void FindFiles()
         {
             TestFileContext.CreateFiles("folder/foo/test.txt",
@@ -235,11 +234,11 @@ namespace Frends.File.Tests
                 "folder/foo/sub/test.txt",
                 "folder/bar/sub/example2.json");
             var results = File.Find(new FindInput() { Directory = TestFileContext.RootPath, Pattern = "**/*.xml" }, new FindOption());
-            Assert.That(results.Count, Is.EqualTo(2));
-            Assert.That(results.All(x => x.Extension.Equals(".xml")));
+            Assert.Equal(2, results.Count);
+            Assert.True(results.All(x => x.Extension.Equals(".xml")));
         }
 
-        [Test]
+        [Fact]
         public void FindFilesShouldThrowIfFolderNotExist()
         {
             var ex = Assert.Throws<Exception>(() => File.Find(
@@ -250,10 +249,10 @@ namespace Frends.File.Tests
                 },
                 new FindOption()));
 
-            Assert.That(ex.Message, Does.Contain("Directory does not exist or you do not have read access"));
+            Assert.Contains("Directory does not exist or you do not have read access", ex.Message);
         }
 
-        [Test]
+        [Fact]
         public async Task WriteFileAppend()
         {
             TestFileContext.CreateFile("test.txt", "old content");
@@ -269,10 +268,10 @@ namespace Frends.File.Tests
                 });
 
             var fileContent = System.IO.File.ReadAllText(result.Path);
-            Assert.That(fileContent, Is.EqualTo("old contentnew content"));
+            Assert.Equal("old contentnew content", fileContent);
         }
 
-        [Test]
+        [Fact]
         public async Task WriteFileOverWrite()
         {
             TestFileContext.CreateFile("test.txt", "old content");
@@ -288,14 +287,14 @@ namespace Frends.File.Tests
                 });
 
             var fileContent = System.IO.File.ReadAllText(result.Path);
-            Assert.That(fileContent, Is.EqualTo("new content"));
+            Assert.Equal("new content", fileContent);
         }
 
-        [Test]
-        public void WriteFileThrow()
+        [Fact]
+        public async Task WriteFileThrow()
         {
             TestFileContext.CreateFile("test.txt", "old content");
-            var ex = Assert.ThrowsAsync<IOException>(async () => await File.Write(
+            var ex = await Assert.ThrowsAsync<IOException>(async () => await File.Write(
                 new WriteInput()
                 {
                     Content = "new content",
@@ -307,11 +306,11 @@ namespace Frends.File.Tests
                 }));
 
             var fileContent = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "test.txt"));
-            Assert.That(fileContent, Is.EqualTo("old content"));
-            Assert.That(ex.Message, Is.EqualTo($"File already exists: {Path.Combine(TestFileContext.RootPath, "test.txt")}"));
+            Assert.Equal("old content", fileContent);
+            Assert.Equal($"File already exists: {Path.Combine(TestFileContext.RootPath, "test.txt")}", ex.Message);
         }
 
-        [Test]
+        [Fact]
         public async Task WriteFileBytesAppend()
         {
             var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
@@ -330,10 +329,10 @@ namespace Frends.File.Tests
 
             var fileContentBytes = System.IO.File.ReadAllBytes(result.Path);
 
-            Assert.That(fileContentBytes.Length, Is.EqualTo(8 + imageBytes.Length));
+            Assert.Equal(8 + imageBytes.Length, fileContentBytes.Length);
         }
 
-        [Test]
+        [Fact]
         public async Task WriteFileBytesOverwrite()
         {
             var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
@@ -352,11 +351,11 @@ namespace Frends.File.Tests
 
             var fileContentBytes = System.IO.File.ReadAllBytes(result.Path);
 
-            Assert.That(fileContentBytes.Length, Is.EqualTo(imageBytes.Length));
-            Assert.That(fileContentBytes, Is.EqualTo(imageBytes));
+            Assert.Equal(imageBytes.Length, fileContentBytes.Length);
+            Assert.Equal(imageBytes, fileContentBytes);
         }
 
-        [Test]
+        [Fact]
         public async Task WriteFileBytesThrow()
         {
             var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
@@ -375,31 +374,31 @@ namespace Frends.File.Tests
 
             var fileContentBytes = System.IO.File.ReadAllBytes(result.Path);
 
-            Assert.That(fileContentBytes.Length, Is.EqualTo(imageBytes.Length));
-            Assert.That(fileContentBytes, Is.EqualTo(imageBytes));
+            Assert.Equal(imageBytes.Length, fileContentBytes.Length);
+            Assert.Equal(imageBytes, fileContentBytes);
         }
 
-        [Test]
+        [Fact]
         public async Task ReadFileContent()
         {
             var fileContent = "Well this is content with some extra nice ümlauts: ÄÖåå 你好!";
             TestFileContext.CreateFile("Folder/test.txt", fileContent);
             var result = await File.Read(new ReadInput() { Path = Path.Combine(TestFileContext.RootPath, "folder/test.txt") }, new ReadOption() { });
-            Assert.That(result.Content, Is.EqualTo(fileContent));
+            Assert.Equal(fileContent, result.Content);
         }
 
-        [Test]
+        [Fact]
         public async Task ReadFileContentBytes()
         {
             var result = await File.ReadBytes(new ReadInput() { Path = BinaryTestFilePath }, new ReadBytesOption() { });
 
             var expectedData = System.IO.File.ReadAllBytes(BinaryTestFilePath);
 
-            Assert.That(result.ContentBytes.Length, Is.EqualTo(expectedData.Length));
-            Assert.That(result.ContentBytes, Is.EqualTo(expectedData));
+            Assert.Equal(expectedData.Length, result.ContentBytes.Length);
+            Assert.Equal(expectedData, result.ContentBytes);
         }
 
-        [Test]
+        [Fact]
         public async Task WriteReadFileWithLatin1()
         {
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestFiles/ansi.txt"); //ansi is Latin1 here
@@ -417,12 +416,12 @@ namespace Frends.File.Tests
             var result = await File.Write(new WriteInput() { Content = res.Content, Path = Path.Combine(TestFileContext.RootPath, "test.txt") }, new WriteOption() { FileEncoding = FileEncoding.Other, EncodingInString = "Latin1", WriteBehaviour = WriteBehaviour.Append });
 
             var fileContent = System.IO.File.ReadAllText(result.Path); //Without encoding it will use UTF-8 and the text will be scrambled
-            Assert.That(fileContent, Is.Not.EqualTo("ÅÖÄåöÄ"));
+            Assert.NotEqual("ÅÖÄåöÄ", fileContent);
             fileContent = System.IO.File.ReadAllText(result.Path, Encoding.GetEncoding("Latin1"));
-            Assert.That(fileContent, Is.EqualTo("ÅÖÄåöä"));
+            Assert.Equal("ÅÖÄåöä", fileContent);
         }
 
-        [Test]
+        [Fact]
         public async Task WriteReadFileWithUtf8NoBom()
         {
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestFiles/utf8nobom.txt");
@@ -450,7 +449,7 @@ namespace Frends.File.Tests
                 });
 
             var fileContent = System.IO.File.ReadAllText(result.Path, Encoding.UTF8);
-            Assert.That(fileContent, Is.EqualTo("ÅÖÄåöä"));
+            Assert.Equal("ÅÖÄåöä", fileContent);
         }
 
         private static string BinaryTestFilePath => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestFiles/frends_favicon.png");

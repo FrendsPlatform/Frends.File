@@ -40,7 +40,7 @@ namespace Frends.File
 
                     if (options.CreateTargetDirectories)
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath) ?? throw new InvalidOperationException());
                     }
 
                     switch (options.IfTargetFileExists)
