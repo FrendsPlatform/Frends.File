@@ -138,14 +138,13 @@ namespace Frends.File
             }
 
             var domainAndUserName = GetDomainAndUserName(userName);
-#if NETSTANDARD2_0
-      return Impersonation.RunAsUser(
-                new UserCredentials(domainAndUserName[0], domainAndUserName[1], password), LogonType.NewCredentials,
-                () => action().Result);
+#if NET461
+            return await Impersonation.RunAsUser(
+                            new UserCredentials(domainAndUserName[0], domainAndUserName[1], password), LogonType.NewCredentials,
+                            async () => await action().ConfigureAwait(false));
+     
 #else
-       return await Impersonation.RunAsUser(
-                new UserCredentials(domainAndUserName[0], domainAndUserName[1], password), LogonType.NewCredentials,
-                async () => await action());
+            throw new PlatformNotSupportedException("Impersonation not supported for this platform. Only works on full framework.");
 #endif
 
         }
@@ -242,7 +241,7 @@ namespace Frends.File
             while (System.IO.File.Exists(destFilePath))
             {
                 string tempFileName = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}({count++})";
-                destFilePath = Path.Combine(Path.GetDirectoryName(destFilePath) ?? throw new InvalidOperationException(), path2: tempFileName + Path.GetExtension(sourceFilePath));
+                destFilePath = Path.Combine(Path.GetDirectoryName(destFilePath), path2: tempFileName + Path.GetExtension(sourceFilePath));
             }
 
             return destFilePath;
