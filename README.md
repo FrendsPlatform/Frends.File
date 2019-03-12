@@ -1,22 +1,23 @@
 # Frends.File
 FRENDS Tasks to preform various file system based operations.
 
+- [Frends.File](#frendsfile)
 - [Installing](#installing)
 - [Documentation](#documentation)
-    - [Pattern matching](#pattern-matching)
+  - [Pattern matching](#pattern-matching)
 - [Tasks](#tasks)
-    - [Read](#read)
-	- [ReadBytes](#readbytes)
-    - [Write](#write)
-	- [WriteBytes](#writebytes)
-    - [Find](#find)
-    - [Move](#move)
-    - [Copy](#copy)
-    - [Delete](#delete)
-    - [Rename](#rename)
+  - [Read](#read)
+  - [ReadBytes](#readbytes)
+  - [Write](#write)
+  - [WriteBytes](#writebytes)
+  - [Find](#find)
+  - [Move](#move)
+  - [Copy](#copy)
+  - [Delete](#delete)
+  - [Rename](#rename)
 - [License](#license)
 - [Building](#building)
-- [Contributing](#contributing)   
+- [Contributing](#contributing)
 
 Installing
 ==========
@@ -333,17 +334,19 @@ Clone a copy of the repo
 
 Restore dependencies
 
-`nuget restore frends.file`
+`dotnet restore`
 
 Rebuild the project
 
-Run Tests with nunit3. Tests can be found under
+`dotnet build`
 
-`Frends.File.Tests\bin\Release\Frends.File.Tests.dll`
+Run Tests
+
+`dotnet test Frends.File.Tests`
 
 Create a nuget package
 
-`nuget pack nuspec/Frends.File.nuspec`
+`dotnet pack Frends.File`
 
 Contributing
 ============

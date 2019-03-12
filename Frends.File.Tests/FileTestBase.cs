@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,22 +11,16 @@ namespace Frends.File.Tests
     {
         protected DisposableFileSystem TestFileContext;
 
-        [SetUp]
-        public void Setup()
+        protected FileTestBase()
         {
             TestFileContext = new DisposableFileSystem();
         }
 
-        [TearDown]
-        public void ClearContext()
-        {
-            TestFileContext?.Dispose();
-            TestFileContext = null;
-        }
 
         public void Dispose()
         {
             TestFileContext?.Dispose();
+            TestFileContext = null;
         }
     }
 }

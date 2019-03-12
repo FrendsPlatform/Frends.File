@@ -138,10 +138,15 @@ namespace Frends.File
             }
 
             var domainAndUserName = GetDomainAndUserName(userName);
-            using (Impersonation.LogonUser(domainAndUserName[0], domainAndUserName[1], password, LogonType.NewCredentials))
-            {
-                return await action().ConfigureAwait(false);
-            }
+#if NET461
+            return await Impersonation.RunAsUser(
+                            new UserCredentials(domainAndUserName[0], domainAndUserName[1], password), LogonType.NewCredentials,
+                            async () => await action().ConfigureAwait(false));
+     
+#else
+            throw new PlatformNotSupportedException("Impersonation not supported for this platform. Only works on full framework.");
+#endif
+
         }
 
         private static TResult ExecuteAction<TResult>(Func<TResult> action, bool useGivenCredentials, string userName, string password)
@@ -152,10 +157,9 @@ namespace Frends.File
             }
 
             var domainAndUserName = GetDomainAndUserName(userName);
-            using (Impersonation.LogonUser(domainAndUserName[0], domainAndUserName[1], password, LogonType.NewCredentials))
-            {
-                return action();
-            }
+
+            return Impersonation.RunAsUser(new UserCredentials(domainAndUserName[0], domainAndUserName[1], password),
+                LogonType.NewCredentials, action);
         }
 
         internal static PatternMatchingResult FindMatchingFiles(string directoryPath, string pattern)
@@ -173,7 +177,7 @@ namespace Frends.File
             return results;
         }
 
-        #region Executes for that public static tasks.
+#region Executes for that public static tasks.
         private static async Task<ReadResult> ExecuteRead(ReadInput input, ReadOption options)
         {
             var encoding = GetEncoding(options.FileEncoding, options.EnableBom, options.EncodingInString);
@@ -322,7 +326,7 @@ namespace Frends.File
             }
         }
 
-        #endregion
+#endregion
 
         private static Encoding GetEncoding(FileEncoding optionsFileEncoding, bool optionsEnableBom, string optionsEncodingInString)
         {
