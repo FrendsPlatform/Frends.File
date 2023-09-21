@@ -21,7 +21,7 @@ namespace Frends.File
         /// </summary>
         public static async Task CopyFileAsync(string sourceFilePath, string targetFilePath, CancellationToken cancellationToken)
         {
-            using (FileStream sourceStream = System.IO.File.Open(sourceFilePath, FileMode.Open))
+            using (FileStream sourceStream = System.IO.File.Open(sourceFilePath, FileMode.Open, FileAccess.Read))
             {
                 using (FileStream destinationStream = System.IO.File.Open(targetFilePath, FileMode.CreateNew))
                 {
