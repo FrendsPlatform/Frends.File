@@ -65,11 +65,11 @@ namespace Frends.File
         /// This needs to be of format domain\username
         /// </summary>
         [DefaultValue("\"domain\\username\"")]
-        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections),"", true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string UserName { get; set; }
 
         [PasswordPropertyText]
-        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections),"", true)]
+        [UIHint(nameof(UseGivenUserCredentialsForRemoteConnections), "", true)]
         public string Password { get; set; }
 
         /// <summary>

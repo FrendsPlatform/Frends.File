@@ -12,7 +12,7 @@ namespace Frends.File
 {
     public static class FileBatchCommand
     {
-        public static async Task<IList<FileInBatchResult>> ExecuteAsync(IFileBatchInput input, IFileBatchOptions options, 
+        public static async Task<IList<FileInBatchResult>> ExecuteAsync(IFileBatchInput input, IFileBatchOptions options,
             Func<string, string, CancellationToken, Task> batchAction, CancellationToken cancellationToken, string actionNameInErrors)
         {
             var results = File.FindMatchingFiles(input.Directory, input.Pattern);
@@ -66,7 +66,8 @@ namespace Frends.File
                     }
                     fileResults.Add(new FileInBatchResult(sourceFilePath, targetFilePath));
                 }
-            } catch(Exception)
+            }
+            catch (Exception)
             {
                 //Delete the target files that were already moved before a file that exists breaks the move command
                 Frends.File.File.DeleteExistingFiles(fileResults.Select(x => x.Path));
@@ -77,7 +78,7 @@ namespace Frends.File
         }
 
         private static void AssertNoTargetFileConflicts(IEnumerable<string> filePaths, string errorOp)
-        { 
+        {
             // check the target file list to see there should not be conflicts before doing anything
             var duplicateTargetPaths = GetDuplicateValues(filePaths);
             if (duplicateTargetPaths.Any())
