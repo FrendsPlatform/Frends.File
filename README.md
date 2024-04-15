@@ -303,7 +303,7 @@ Input:
 | Property        | Type     | Description                          | Example                 |
 |-----------------|----------|--------------------------------------|-------------------------|
 | Path            | string   | Full path to the file to be renamed. | `c:\root\folder\example.txt`        |
-| NewFileName     | string   | The new filename including extension | `newName.txt`  |
+| NewFileName     | string   | New filename with file extension. Final filename can differ depending on RenameOptions.RenameBehaviour and can be found from RenameResult.Path. Cannot be empty. | `newName.txt`  |
 
 Options:
 

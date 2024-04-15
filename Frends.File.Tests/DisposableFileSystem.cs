@@ -22,7 +22,7 @@ namespace Frends.File.Tests
             return this;
         }
 
-        public DisposableFileSystem CreateFile(string path,string content)
+        public DisposableFileSystem CreateFile(string path, string content)
         {
             string filePath = Path.Combine(RootPath, path);
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));

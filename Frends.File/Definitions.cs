@@ -57,10 +57,16 @@ namespace Frends.File
     public class RenameInput
     {
         /// <summary>
-        /// Full path of the file to be renamed
+        /// Full path of the file to be renamed.
         /// </summary>
+        /// <example>C:\temp\foo.txt</example>
         [DefaultValue("\"c:\\temp\\foo.txt\"")]
         public string Path { get; set; }
+
+        /// <summary>
+        /// New filename with file extension. Final filename can differ depending on RenameOptions.RenameBehaviour and can be found from RenameResult.Path. Cannot be empty.
+        /// </summary>
+        /// <example>bar.txt</example>
         [DefaultValue("\"bar.txt\"")]
         public string NewFileName { get; set; }
     }
@@ -86,7 +92,10 @@ namespace Frends.File
         public string Password { get; set; }
 
         /// <summary>
-        /// How the file rename should work if a file with the new name already exists
+        /// How the file rename should work if a file with the new name already exists.
+        /// Throw, an error and roll back all transfers.
+        /// Overwrite, the target file.
+        /// Rename, the transferred file by appending a number to the end.
         /// </summary>
         public FileExistsAction RenameBehaviour { get; set; }
     }

@@ -1,14 +1,14 @@
-﻿using SimpleImpersonation;
-using Microsoft.Extensions.FileSystemGlobbing;
+﻿using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using System.Collections.Generic;
-using System.IO;
+using SimpleImpersonation;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 #pragma warning disable 1591
 
@@ -37,7 +37,7 @@ namespace Frends.File
         public static async Task<ReadBytesResult> ReadBytes([PropertyTab] ReadInput input, [PropertyTab] ReadBytesOption options)
         {
             return await ExecuteActionAsync(
-                    () => ExecuteReadBytes(input, options),
+                    () => ExecuteReadBytes(input),
                     options.UseGivenUserCredentialsForRemoteConnections,
                     options.UserName,
                     options.Password)
@@ -177,7 +177,7 @@ namespace Frends.File
             return results;
         }
 
-#region Executes for that public static tasks.
+        #region Executes for that public static tasks.
         private static async Task<ReadResult> ExecuteRead(ReadInput input, ReadOption options)
         {
             var encoding = GetEncoding(options.FileEncoding, options.EnableBom, options.EncodingInString);
@@ -190,7 +190,7 @@ namespace Frends.File
             }
         }
 
-        private static async Task<ReadBytesResult> ExecuteReadBytes(ReadInput input, ReadBytesOption options)
+        private static async Task<ReadBytesResult> ExecuteReadBytes(ReadInput input)
         {
             using (var file = new FileStream(input.Path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
             {
@@ -210,28 +210,38 @@ namespace Frends.File
 
         private static RenameResult ExecuteRename(RenameInput input, FileExistsAction fileExistsAction)
         {
-            var directoryPath = Path.GetDirectoryName(input.Path);
-            var newFileFullPath = Path.Combine(directoryPath, input.NewFileName);
+            if (!System.IO.File.Exists(input.Path))
+                throw new FileNotFoundException($@"Rename operation cancelled. File {input.Path} not found.");
+            if (string.IsNullOrEmpty(input.NewFileName))
+                throw new ArgumentNullException(@"Rename operation cancelled. Parameter 'NewFileName' cannot be empty.");
 
-            switch (fileExistsAction)
+            var newFileFullPath = Path.Combine(Path.GetDirectoryName(input.Path), input.NewFileName);
+
+            if (System.IO.File.Exists(newFileFullPath))
             {
-                case FileExistsAction.Rename:
-                    newFileFullPath = GetNonConflictingDestinationFilePath(input.Path, newFileFullPath);
-                    break;
-                case FileExistsAction.Overwrite:
-                    if (System.IO.File.Exists(newFileFullPath))
-                    {
-                        System.IO.File.Delete(newFileFullPath);
-                    }
-                    break;
-                case FileExistsAction.Throw:
-                    if (System.IO.File.Exists(newFileFullPath))
-                    {
+                switch (fileExistsAction)
+                {
+                    case FileExistsAction.Rename:
+                        newFileFullPath = GetNonConflictingDestinationFilePath(null, newFileFullPath);
+                        System.IO.File.Move(input.Path, newFileFullPath);
+                        break;
+                    case FileExistsAction.Overwrite:
+                        System.IO.File.Copy(input.Path, newFileFullPath, true);
+                        var orgFileInfo = new FileInfo(input.Path);
+                        var newFileInfo = new FileInfo(newFileFullPath);
+
+                        if (orgFileInfo.Length != newFileInfo.Length)
+                            throw new Exception($@"The original file, {orgFileInfo.FullName}, was successfully copied to {newFileInfo.FullName} for overwrite operation. However, the original file was not deleted because these files do not match in size.");
+                        else
+                            System.IO.File.Delete(orgFileInfo.FullName);
+                        break;
+                    case FileExistsAction.Throw:
                         throw new IOException($"File already exists {newFileFullPath}. No file renamed.");
-                    }
-                    break;
+                }
             }
-            System.IO.File.Move(input.Path, newFileFullPath);
+            else
+                System.IO.File.Move(input.Path, newFileFullPath);
+
             return new RenameResult(newFileFullPath);
         }
 
@@ -240,8 +250,8 @@ namespace Frends.File
             var count = 1;
             while (System.IO.File.Exists(destFilePath))
             {
-                string tempFileName = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}({count++})";
-                destFilePath = Path.Combine(Path.GetDirectoryName(destFilePath), path2: tempFileName + Path.GetExtension(sourceFilePath));
+                string tempFileName = $"{Path.GetFileNameWithoutExtension(!string.IsNullOrEmpty(sourceFilePath) ? sourceFilePath : destFilePath)}({count++})";
+                destFilePath = Path.Combine(Path.GetDirectoryName(destFilePath), path2: tempFileName + Path.GetExtension(!string.IsNullOrEmpty(sourceFilePath) ? sourceFilePath : destFilePath));
             }
 
             return destFilePath;
@@ -288,11 +298,7 @@ namespace Frends.File
 
         private static async Task<WriteResult> ExecuteWriteBytes(WriteBytesInput input, WriteBytesOption options)
         {
-            var bytes = input?.ContentBytes as byte[]; // TODO: Use corrctly typed input once UI support expression default editor for arrays
-            if (bytes == null)
-            {
-                throw new ArgumentException("Input.ContentBytes must be a byte array", nameof(input.ContentBytes));
-            }
+            var bytes = input?.ContentBytes as byte[] ?? throw new ArgumentException("Input.ContentBytes must be a byte array", nameof(input.ContentBytes)); // TODO: Use corrctly typed input once UI support expression default editor for arrays
 
             var fileMode = GetAndCheckWriteMode(options.WriteBehaviour, input.Path);
 
@@ -326,7 +332,7 @@ namespace Frends.File
             }
         }
 
-#endregion
+        #endregion
 
         private static Encoding GetEncoding(FileEncoding optionsFileEncoding, bool optionsEnableBom, string optionsEncodingInString)
         {

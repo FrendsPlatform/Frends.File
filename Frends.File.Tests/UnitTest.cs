@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Frends.File.Tests
@@ -16,6 +16,7 @@ namespace Frends.File.Tests
         {
             TestFileContext.CreateFiles(
                     "folder/foo/sub/test.xml",
+                    "folder/foo/sub/rename.xml",
                     "folder/bar/sub/example.xml");
         }
 
@@ -31,7 +32,7 @@ namespace Frends.File.Tests
                 new DeleteOption() { },
                 CancellationToken.None);
 
-            Assert.Equal(2, results.Count);
+            Assert.Equal(3, results.Count);
         }
 
         [Fact]
@@ -72,10 +73,10 @@ namespace Frends.File.Tests
 
             var overWrittenFIle = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder/test.xml"));
             Assert.NotEqual(contentForFileToBeOverwritten, overWrittenFIle);
-            Assert.Equal(2, results.Count);
+            Assert.Equal(3, results.Count);
 
             var destinationFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder")).Length;
-            Assert.Equal(2, destinationFilesLength);
+            Assert.Equal(3, destinationFilesLength);
 
             var secondMoveShouldBeEmpty = await File.Move(
                 new MoveInput()
@@ -109,14 +110,14 @@ namespace Frends.File.Tests
                 new MoveOptions() { IfTargetFileExists = FileExistsAction.Rename },
                 CancellationToken.None);
 
-            Assert.Equal(2, results.Count);
+            Assert.Equal(3, results.Count);
             var originalFile = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder\\test.xml"));
             var copiedFile = System.IO.File.ReadAllText(Path.Combine(TestFileContext.RootPath, "folder\\test(1).xml"));
             Assert.Equal(contentForOriginalFile, originalFile);
             Assert.StartsWith("Automatically generated for testing on", copiedFile);
 
             var destinationFilesLength = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder")).Length;
-            Assert.Equal(3, destinationFilesLength);
+            Assert.Equal(4, destinationFilesLength);
 
             var secondMoveShouldBeEmpty = await File.Move(
                 new MoveInput()
@@ -158,72 +159,123 @@ namespace Frends.File.Tests
             Assert.Single(destinationFilesLength);
 
             var sourceFolder1 = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/"));
-            Assert.Single(sourceFolder1);
+            Assert.Equal(2, sourceFolder1.Length);
 
             var sourceFolder2 = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/bar/sub/"));
             Assert.Single(sourceFolder2);
         }
 
         [Fact]
-        public void RenameFile()
+        public void RenameFile_Overwrite_DestinationFileExists()
         {
-            var resultsOverWrite = File.Rename(
-                new RenameInput()
-                {
-                    Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/test.xml"),
-                    NewFileName = "newTest.xml"
-                },
-                new RenameOption()
-                {
-                    RenameBehaviour = FileExistsAction.Overwrite
-                });
+            var input = new RenameInput()
+            {
+                Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/test.xml"),
+                NewFileName = "rename.xml"
+            };
 
-            Assert.Equal(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest.xml"), resultsOverWrite.Path);
+            var options = new RenameOption()
+            {
+                RenameBehaviour = FileExistsAction.Overwrite
+            };
 
-            var resultsCopy = File.Rename(
-                new RenameInput()
-                {
-                    Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/newTest.xml"),
-                    NewFileName = "newTest.xml"
-                },
-                new RenameOption()
-                {
-                    RenameBehaviour = FileExistsAction.Rename
-                });
+            var result = File.Rename(input, options);
 
-            Assert.Equal(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest(1).xml"), resultsCopy.Path);
+            Assert.Contains("rename.xml", result.Path);
+        }
 
-            var results = File.Rename(
-                new RenameInput()
-                {
-                    Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/newTest(1).xml"),
-                    NewFileName = "newTest.xml"
-                },
-                new RenameOption()
-                {
-                    RenameBehaviour = FileExistsAction.Throw
-                });
+        [Fact]
+        public void RenameFile_Overwrite_DestinationFileNotExists()
+        {
+            var input = new RenameInput()
+            {
+                Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/test.xml"),
+                NewFileName = "rename.xml"
+            };
 
-            Assert.Equal(Path.Combine(TestFileContext.RootPath, "folder\\foo\\sub\\newTest.xml"), results.Path);
-            var folderFiles = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/"));
-            Assert.Single(folderFiles);
-            TestFileContext.CreateFile("folder/foo/sub/throwTest.xml", "temp");
+            var options = new RenameOption()
+            {
+                RenameBehaviour = FileExistsAction.Overwrite
+            };
 
-            var ex = Assert.Throws<IOException>(() => File.Rename(
-                new RenameInput()
-                {
-                    Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/newTest.xml"),
-                    NewFileName = "throwTest.xml"
-                },
-                new RenameOption()
-                {
-                    RenameBehaviour = FileExistsAction.Throw
-                }));
+            System.IO.File.Delete(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/rename.xml"));
 
-            Assert.Contains("throwTest.xml", ex.Message);
+            var result = File.Rename(input, options);
+            Assert.Contains("rename.xml", result.Path);
+        }
 
-            folderFiles = Directory.GetFiles(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/"));
-            Assert.Equal(2, folderFiles.Length);
+        [Fact]
+        public void RenameFile_Overwrite_NewNameNotSet()
+        {
+            var input = new RenameInput()
+            {
+                Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/test.xml"),
+                NewFileName = null,
+            };
+
+            var options = new RenameOption()
+            {
+                RenameBehaviour = FileExistsAction.Overwrite
+            };
+
+            System.IO.File.Delete(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/rename.xml"));
+
+            Assert.Throws<ArgumentNullException>(() => File.Rename(input, options));
+        }
+
+        [Fact]
+        public void RenameFile_Rename_DestinationFileExists()
+        {
+            var input = new RenameInput()
+            {
+                Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/test.xml"),
+                NewFileName = "rename.xml"
+            };
+
+            var options = new RenameOption()
+            {
+                RenameBehaviour = FileExistsAction.Rename
+            };
+
+            var result = File.Rename(input, options);
+
+            Assert.Contains("rename(1).xml", result.Path);
+        }
+
+        [Fact]
+        public void RenameFile_Rename_DestinationFileNotExists()
+        {
+            var input = new RenameInput()
+            {
+                Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/test.xml"),
+                NewFileName = "rename.xml"
+            };
+
+            var options = new RenameOption()
+            {
+                RenameBehaviour = FileExistsAction.Rename
+            };
+
+            System.IO.File.Delete(Path.Combine(TestFileContext.RootPath, "folder/foo/sub/rename.xml"));
+            var result = File.Rename(input, options);
+            Assert.Contains("rename.xml", result.Path);
+        }
+
+        [Fact]
+        public void RenameFile_Throw()
+        {
+            var input = new RenameInput()
+            {
+                Path = Path.Combine(TestFileContext.RootPath, "folder/foo/sub/test.xml"),
+                NewFileName = "rename.xml"
+            };
+
+            var options = new RenameOption()
+            {
+                RenameBehaviour = FileExistsAction.Throw
+            };
+
+            Assert.Throws<IOException>(() => File.Rename(input, options));
         }
 
         [Fact]
@@ -234,7 +286,7 @@ namespace Frends.File.Tests
                 "folder/foo/sub/test.txt",
                 "folder/bar/sub/example2.json");
             var results = File.Find(new FindInput() { Directory = TestFileContext.RootPath, Pattern = "**/*.xml" }, new FindOption());
-            Assert.Equal(2, results.Count);
+            Assert.Equal(3, results.Count);
             Assert.True(results.All(x => x.Extension.Equals(".xml")));
         }
 
