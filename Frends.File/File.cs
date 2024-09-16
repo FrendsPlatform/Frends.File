@@ -138,7 +138,7 @@ namespace Frends.File
             }
 
             var domainAndUserName = GetDomainAndUserName(userName);
-#if NET461
+#if (NET461 || NET471)
             return await Impersonation.RunAsUser(
                             new UserCredentials(domainAndUserName[0], domainAndUserName[1], password), LogonType.NewCredentials,
                             async () => await action().ConfigureAwait(false));
