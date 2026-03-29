@@ -361,6 +361,39 @@ namespace Frends.File.Tests
             Assert.Equal("old content", fileContent);
             Assert.Equal($"File already exists: {Path.Combine(TestFileContext.RootPath, "test.txt")}", ex.Message);
         }
+        [Fact]
+        public async Task WriteFileCreateDirectory()
+        {
+            var result = await File.Write(
+                new WriteInput()
+                {
+                    Content = "Created with a subdirectory",
+                    Path = Path.Combine(TestFileContext.RootPath, "folder/Subdir/subdir.txt")
+                },
+                new WriteOption()
+                {
+                    CreateTargetDirectories = true
+                });
+            var fileContent = System.IO.File.ReadAllText(result.Path);
+            Console.WriteLine(result.Path);
+            Assert.Equal("Created with a subdirectory", fileContent);
+        }
+
+        [Fact]
+        public async Task WriteFileCreateDirectoryThrow()
+        {
+            var result = await Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await File.Write(
+                new WriteInput()
+                {
+                    Content = "Task should throw",
+                    Path = Path.Combine(TestFileContext.RootPath, "folder/Subdir/subdir.txt")
+                },
+                new WriteOption()
+                {
+                    CreateTargetDirectories = false
+                }));
+            
+        }
 
         [Fact]
         public async Task WriteFileBytesAppend()
@@ -428,6 +461,42 @@ namespace Frends.File.Tests
 
             Assert.Equal(imageBytes.Length, fileContentBytes.Length);
             Assert.Equal(imageBytes, fileContentBytes);
+        }
+
+        [Fact]
+        public async Task WriteFileBytesCreateDirectory()
+        {
+            var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
+            TestFileContext.CreateBinaryFile("test.png", new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }); // empty png
+            var result = await File.WriteBytes(
+                new WriteBytesInput()
+                {
+                    ContentBytes = imageBytes,
+                    Path = Path.Combine(TestFileContext.RootPath, "folder/Subdir/test.png")
+                },
+                new WriteBytesOption()
+                {
+                    CreateTargetDirectories = true,
+                });
+            var fileContentBytes = System.IO.File.ReadAllBytes(result.Path);
+            Assert.Equal(imageBytes.Length, fileContentBytes.Length);
+            Assert.Equal(imageBytes, fileContentBytes);
+        }
+        [Fact]
+        public async Task WriteFileBytesCreateDirectoryThrow()
+        {
+            var imageBytes = System.IO.File.ReadAllBytes(BinaryTestFilePath);
+            TestFileContext.CreateBinaryFile("test.png", new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }); // empty png
+            var result = await Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await File.WriteBytes(
+                new WriteBytesInput()
+                {
+                    ContentBytes = imageBytes,
+                    Path = Path.Combine(TestFileContext.RootPath, "folder/Subdir/test.png")
+                },
+                new WriteBytesOption()
+                {
+                    CreateTargetDirectories = false,
+                }));
         }
 
         [Fact]

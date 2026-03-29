@@ -287,6 +287,15 @@ namespace Frends.File
             var encoding = GetEncoding(options.FileEncoding, options.EnableBom, options.EncodingInString);
             var fileMode = GetAndCheckWriteMode(options.WriteBehaviour, input.Path);
 
+            if(options.CreateTargetDirectories)
+            {
+                var directoryPath = Path.GetDirectoryName(input.Path);
+                if(!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+            }
+
             using (var fileStream = new FileStream(input.Path, fileMode, FileAccess.Write, FileShare.Write, 4096, useAsync: true))
             using (var writer = new StreamWriter(fileStream, encoding))
             {
@@ -298,6 +307,14 @@ namespace Frends.File
 
         private static async Task<WriteResult> ExecuteWriteBytes(WriteBytesInput input, WriteBytesOption options)
         {
+            if (options.CreateTargetDirectories)
+            {
+                var directoryPath = Path.GetDirectoryName(input.Path);
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+            }
             var bytes = input?.ContentBytes as byte[] ?? throw new ArgumentException("Input.ContentBytes must be a byte array", nameof(input.ContentBytes)); // TODO: Use corrctly typed input once UI support expression default editor for arrays
 
             var fileMode = GetAndCheckWriteMode(options.WriteBehaviour, input.Path);

@@ -247,6 +247,13 @@ namespace Frends.File
         /// How the file write should work if a file with the new name already exists
         /// </summary>
         public WriteBehaviour WriteBehaviour { get; set; }
+
+        /// <summary>
+        /// If set, will create the target directory if it does not exist,
+        /// as well as any sub directories.
+        /// </summary>
+        [DefaultValue(false)]
+        public bool CreateTargetDirectories { get; set; }
     }
 
     public class WriteBytesOption
@@ -273,6 +280,13 @@ namespace Frends.File
         /// How the file write should work if a file with the new name already exists
         /// </summary>
         public WriteBehaviour WriteBehaviour { get; set; }
+
+        /// <summary>
+        /// If set, will create the target directory if it does not exist,
+        /// as well as any sub directories.
+        /// </summary>
+        [DefaultValue(false)]
+        public bool CreateTargetDirectories { get; set; }
     }
 
     public class WriteResult
